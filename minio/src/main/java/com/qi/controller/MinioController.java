@@ -42,12 +42,12 @@ public class MinioController {
     }
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam(name = "file") MultipartFile[] multipartFiles) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public String upload(@RequestParam(name = "file") MultipartFile[] multipartFiles) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
         if (multipartFiles == null || multipartFiles.length == 0) {
             result.setCode(500);
             result.setMessage("上传文件不能为空");
-            return result;
+            return "上传文件不能为空";
         }
 
         boolean found =
@@ -63,12 +63,15 @@ public class MinioController {
             minioClient.uploadObject(UploadObjectArgs.builder()
                     .bucket(MINIO_BUCKET)
                     .object(originalFilename)
-                    .filename("/Users/jiaqi.zhang/Downloads/dahai.jpeg")
+                    //Win 上传成功
+                    .filename("C:\\Users\\Administrator\\Desktop\\JVM.png")
+                    //mac 因为权限问题 无法访问磁盘
+//                    .filename("/Users/jiaqi.zhang/Downloads/dahai.jpeg")
                     .build());
         }
         result.setCode(200);
         result.setMessage("上传成功");
-        return result;
+        return "上传成功";
     }
 
     @PostMapping("/download")
