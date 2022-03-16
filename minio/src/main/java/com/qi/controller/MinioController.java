@@ -5,10 +5,7 @@ import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,7 +14,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author jiaqi.zhang
@@ -121,7 +117,30 @@ public class MinioController {
      * @return
      */
     @PostMapping("/download")
-    public List<Object> download() {
-        return null;
+    public String download(String fileName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        //TODO 有问题
+        minioClient.downloadObject(DownloadObjectArgs.builder().bucket(MINIO_BUCKET).filename("/Users/jiaqi.zhang/Desktop/upload/" + fileName).object(fileName).build());
+        return "下载成功";
+    }
+
+    /**
+     * 删除单个文件
+     *
+     * @param fileName
+     * @return
+     * @throws ServerException
+     * @throws InsufficientDataException
+     * @throws ErrorResponseException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws InvalidResponseException
+     * @throws XmlParserException
+     * @throws InternalException
+     */
+    @RequestMapping("/delete")
+    public String delete(String fileName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        minioClient.removeObject(RemoveObjectArgs.builder().bucket(MINIO_BUCKET).object(fileName).build());
+        return "删除成功";
     }
 }
