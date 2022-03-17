@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "minio")
 @Component
 public class MinioProp {
-    private String endpoint;
-    private String accesskey;
-    private String secretKey;
-
+  private String endpoint;
+  private String accesskey;
+  private String secretKey;
 }

@@ -14,12 +14,15 @@ import javax.annotation.Resource;
  */
 @Configuration
 public class MinioConfiguration {
-    @Resource
-    private MinioProp minioProp;
+  @Resource private MinioProp minioProp;
 
-    @Bean
-    public MinioClient minioClient() {
-        MinioClient minioClient = MinioClient.builder().endpoint(minioProp.getEndpoint()).credentials(minioProp.getAccesskey(), minioProp.getSecretKey()).build();
-        return minioClient;
-    }
+  @Bean
+  public MinioClient minioClient() {
+    MinioClient minioClient =
+        MinioClient.builder()
+            .endpoint(minioProp.getEndpoint())
+            .credentials(minioProp.getAccesskey(), minioProp.getSecretKey())
+            .build();
+    return minioClient;
+  }
 }

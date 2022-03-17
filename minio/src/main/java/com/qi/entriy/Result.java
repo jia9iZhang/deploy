@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 @Configuration
 public class Result<T> {
-    //    private static final long serialVersionUID = 1L;
-    private Integer code;
-    private Object data = "";
-    private String message = "";
+  //    private static final long serialVersionUID = 1L;
+  private Integer code;
+  private Object data = "";
+  private String message = "";
 }
