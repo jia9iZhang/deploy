@@ -53,7 +53,6 @@ public class MinioController {
     // TODO 有问题
     //
     // minioClient.downloadObject(DownloadObjectArgs.builder().bucket(MINIO_BUCKET).filename("/Users/jiaqi.zhang/Desktop/upload/" + fileName).object(fileName).build());
-    //        return "下载成功";
     return null;
   }
 

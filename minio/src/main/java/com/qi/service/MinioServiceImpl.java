@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,9 +38,9 @@ public class MinioServiceImpl implements MinioService {
     }
     for (MultipartFile file : multipartFiles) {
       // 遍历文件数组
-      String originalFilename = file.getOriginalFilename();
+      String objectName = file.getOriginalFilename() + "-" + LocalDateTime.now();
       try (InputStream in = file.getInputStream()) {
-        minioUtil.uploadFileToBucket(BUCKET, originalFilename, in);
+        minioUtil.uploadFileToBucket(BUCKET, objectName, in);
       }
     }
     return new Result(200, "上传成功");
