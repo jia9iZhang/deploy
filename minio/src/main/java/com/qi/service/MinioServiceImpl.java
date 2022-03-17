@@ -1,5 +1,6 @@
 package com.qi.service;
 
+import com.qi.config.Result;
 import com.qi.util.MinioUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,17 @@ public class MinioServiceImpl implements MinioService {
   @Autowired MinioUtil minioUtil;
 
   @Override
-  public List<String> list() {
-    return minioUtil.bucketObjectNameLists(BUCKET);
+  public Result listObjects() {
+    List<String> lists = minioUtil.bucketObjectNameLists(BUCKET);
+    return new Result(200, lists);
   }
 
   @Override
   @SneakyThrows
-  public String upload(MultipartFile[] multipartFiles) {
+  public Result uploadObjects(MultipartFile[] multipartFiles) {
+    if (multipartFiles == null || multipartFiles.length == 0) {
+      return new Result(500, "上传文件不能为空");
+    }
     for (MultipartFile file : multipartFiles) {
       // 遍历文件数组
       String originalFilename = file.getOriginalFilename();
@@ -37,18 +42,18 @@ public class MinioServiceImpl implements MinioService {
         minioUtil.uploadFileToBucket(BUCKET, originalFilename, in);
       }
     }
-    return "上传成功";
+    return new Result(200, "上传成功");
   }
 
   @Override
-  public String delete(String fileName) {
+  public Result deleteBucketObject(String fileName) {
     minioUtil.deleteObject(BUCKET, fileName);
-    return "删除成功";
+    return new Result(200, "删除成功");
   }
 
   @Override
-  public String getPresignedObjectUrl(String bucketName, String objectName) {
+  public Result getPresignedObjectUrl(String bucketName, String objectName) {
     String presignedObjectUrl = minioUtil.getPresignedObjectUrl(bucketName, objectName);
-    return presignedObjectUrl;
+    return new Result(200, presignedObjectUrl);
   }
 }

@@ -1,12 +1,11 @@
 package com.qi.controller;
 
+import com.qi.config.Result;
 import com.qi.service.MinioServiceImpl;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * @author jiaqi.zhang
@@ -26,8 +25,8 @@ public class MinioController {
    */
   @GetMapping("/list")
   @SneakyThrows
-  public List<String> list() {
-    return minioService.list();
+  public Result listObjects() {
+    return minioService.listObjects();
   }
 
   /**
@@ -38,13 +37,9 @@ public class MinioController {
    */
   @PostMapping("/upload")
   @SneakyThrows
-  public String upload(@RequestParam(name = "file") MultipartFile[] multipartFiles) {
-
-    if (multipartFiles == null || multipartFiles.length == 0) {
-      return "上传文件不能为空";
-    }
-    String upload = minioService.upload(multipartFiles);
-    return upload;
+  public Result uploadObjects(@RequestParam(name = "file") MultipartFile[] multipartFiles) {
+    Result result = minioService.uploadObjects(multipartFiles);
+    return result;
   }
 
   /**
@@ -70,9 +65,8 @@ public class MinioController {
    */
   @RequestMapping("/delete")
   @SneakyThrows
-  public String delete(String fileName) {
-    String delete = minioService.delete(fileName);
-    return delete;
+  public Result deleteBucketObject(String fileName) {
+    return minioService.deleteBucketObject(fileName);
   }
 
   /**
@@ -82,8 +76,7 @@ public class MinioController {
    * @return
    */
   @RequestMapping("/getPreObjectUrl")
-  public String getPresignedObjectUrl(String fileName) {
-    String presignedObjectUrl = minioService.getPresignedObjectUrl(BUCKET, fileName);
-    return presignedObjectUrl;
+  public Result getPresignedObjectUrl(String fileName) {
+    return minioService.getPresignedObjectUrl(BUCKET, fileName);
   }
 }

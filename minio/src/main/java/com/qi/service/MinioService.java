@@ -1,8 +1,7 @@
 package com.qi.service;
 
+import com.qi.config.Result;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * @author jiaqi.zhang
@@ -10,11 +9,35 @@ import java.util.List;
  * @date 2022/3/16 22:40
  */
 public interface MinioService {
-  List<String> list();
+  /**
+   * 获取桶对象列表
+   *
+   * @return
+   */
+  Result listObjects();
 
-  String upload(MultipartFile[] multipartFiles);
+  /**
+   * 流式上传对象
+   *
+   * @param multipartFiles
+   * @return
+   */
+  Result uploadObjects(MultipartFile[] multipartFiles);
 
-  String delete(String fileName);
+  /**
+   * 删除桶中对象
+   *
+   * @param fileName
+   * @return
+   */
+  Result deleteBucketObject(String fileName);
 
-  String getPresignedObjectUrl(String bucketName, String objectName);
+  /**
+   * 获取文件对象的UR
+   *
+   * @param bucketName
+   * @param objectName
+   * @return
+   */
+  Result getPresignedObjectUrl(String bucketName, String objectName);
 }
