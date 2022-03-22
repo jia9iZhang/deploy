@@ -4,13 +4,13 @@ import com.qi.config.Result;
 import com.qi.util.MinioUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author jiaqi.zhang
@@ -25,12 +25,6 @@ public class MinioServiceImpl implements MinioService {
   @Autowired MinioUtil minioUtil;
 
   @Override
-  public Result listObjects() {
-    List<String> lists = minioUtil.bucketObjectNameLists(BUCKET);
-    return new Result(200, lists);
-  }
-
-  @Override
   @SneakyThrows
   public Result uploadObjects(MultipartFile[] multipartFiles) {
     if (multipartFiles == null || multipartFiles.length == 0) {
@@ -38,12 +32,23 @@ public class MinioServiceImpl implements MinioService {
     }
     for (MultipartFile file : multipartFiles) {
       // 遍历文件数组
-      String objectName = file.getOriginalFilename() + "-" + LocalDateTime.now();
+      //      String objectName = file.getOriginalFilename() + "-" + LocalDateTime.now();
+      String objectName =
+          StringUtils.substringBeforeLast(file.getOriginalFilename(), ".")
+              + LocalDateTime.now()
+              + "."
+              + StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
       try (InputStream in = file.getInputStream()) {
         minioUtil.uploadFileToBucket(BUCKET, objectName, in);
       }
     }
     return new Result(200, "上传成功");
+  }
+
+  @Override
+  public InputStream downloadObjects(String bucketName, String objectName) {
+    InputStream stream = minioUtil.getObject(bucketName, objectName);
+    return stream;
   }
 
   @Override

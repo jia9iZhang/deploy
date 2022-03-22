@@ -3,9 +3,15 @@ package com.qi.controller;
 import com.qi.config.Result;
 import com.qi.service.MinioServiceImpl;
 import lombok.SneakyThrows;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 
 /**
  * @author jiaqi.zhang
@@ -13,21 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
  * @date 2022/3/14 14:49
  */
 @RestController
+@RequestMapping("/minio")
 public class MinioController {
   private static final String BUCKET = "mybucketdemo";
 
   @Autowired MinioServiceImpl minioService;
-
-  /**
-   * 获取桶中文件列表
-   *
-   * @return
-   */
-  @GetMapping("/list")
-  @SneakyThrows
-  public Result listObjects() {
-    return minioService.listObjects();
-  }
 
   /**
    * 上传多文件至Minio
@@ -35,7 +31,7 @@ public class MinioController {
    * @param multipartFiles
    * @return
    */
-  @PostMapping("/upload")
+  @PutMapping("/upload")
   @SneakyThrows
   public Result uploadObjects(@RequestParam(name = "file") MultipartFile[] multipartFiles) {
     Result result = minioService.uploadObjects(multipartFiles);
@@ -47,13 +43,18 @@ public class MinioController {
    *
    * @return
    */
-  @PostMapping("/download")
-  @SneakyThrows
-  public String download(String fileName) {
+  @GetMapping("/download")
+  public void download(String fileName, HttpServletResponse response) throws IOException {
     // TODO 有问题
-    //
-    // minioClient.downloadObject(DownloadObjectArgs.builder().bucket(MINIO_BUCKET).filename("/Users/jiaqi.zhang/Desktop/upload/" + fileName).object(fileName).build());
-    return null;
+    InputStream in;
+    in = minioService.downloadObjects(BUCKET, fileName);
+    response.setHeader(
+        "Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+    response.setCharacterEncoding("UTF-8");
+    IOUtils.copy(in, response.getOutputStream());
+    if (in != null) {
+      in.close();
+    }
   }
 
   /**
@@ -62,7 +63,7 @@ public class MinioController {
    * @param fileName
    * @return
    */
-  @RequestMapping("/delete")
+  @DeleteMapping("/delete")
   @SneakyThrows
   public Result deleteBucketObject(String fileName) {
     return minioService.deleteBucketObject(fileName);
@@ -74,7 +75,7 @@ public class MinioController {
    * @param fileName
    * @return
    */
-  @RequestMapping("/getPreObjectUrl")
+  @GetMapping("/getPreObjectUrl")
   public Result getPresignedObjectUrl(String fileName) {
     return minioService.getPresignedObjectUrl(BUCKET, fileName);
   }

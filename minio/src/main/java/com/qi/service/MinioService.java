@@ -3,18 +3,14 @@ package com.qi.service;
 import com.qi.config.Result;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+
 /**
  * @author jiaqi.zhang
  * @version 1.0
  * @date 2022/3/16 22:40
  */
 public interface MinioService {
-  /**
-   * 获取桶对象列表
-   *
-   * @return
-   */
-  Result listObjects();
 
   /**
    * 流式上传对象
@@ -23,6 +19,8 @@ public interface MinioService {
    * @return
    */
   Result uploadObjects(MultipartFile[] multipartFiles);
+
+  InputStream downloadObjects(String bucketName, String objectName);
 
   /**
    * 删除桶中对象

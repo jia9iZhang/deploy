@@ -132,4 +132,17 @@ public class MinioUtil {
                 .build());
     return url;
   }
+
+  @SneakyThrows
+  public InputStream getObject(String bucketName, String objectName) {
+    //    StatObjectResponse statObject =
+    // minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(objectName).build());
+    //    if (statObject!=null||statObject.size()>0){
+    //
+    //    }
+    InputStream stream =
+        minioClient.getObject(
+            GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
+    return stream;
+  }
 }
