@@ -2,6 +2,8 @@ package com.qi.controller;
 
 import com.qi.config.Result;
 import com.qi.service.MinioServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.net.URLEncoder;
  */
 @RestController
 @RequestMapping("/minio")
+@Api(tags = "上传文件至Minio API")
 public class MinioController {
   private static final String BUCKET = "mybucketdemo";
 
@@ -32,6 +35,7 @@ public class MinioController {
    * @return
    */
   @PutMapping("/upload")
+  @ApiOperation("上传接口")
   @SneakyThrows
   public Result uploadObjects(@RequestParam(name = "file") MultipartFile[] multipartFiles) {
     Result result = minioService.uploadObjects(multipartFiles);
