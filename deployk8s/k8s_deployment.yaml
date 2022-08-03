@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+#类型
+kind: Deployment
+#元数据
+metadata:
+  name: deployk8s
+  #所属命名空间
+  namespace: deployk8s
+  labels:
+    name: deployk8s
+#详情
+spec:
+  #副本数量
+  replicas: 1
+  #保留历史版本，默认是10
+  revisionHistoryLimit: 10
+  paused: false
+  #部署超时时间(s)
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      name: deployk8s
+  template:
+    metadata:
+      labels:
+        name: deployk8s
+    spec:
+      containers:
+      - name: deployk8s
+        image: deployk8s:1.0
+        ports:
+        - containerPort: 9900

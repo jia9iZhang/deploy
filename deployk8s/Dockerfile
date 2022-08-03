@@ -3,7 +3,6 @@ FROM openjdk:11
 ENV TZ=Asia/Shanghai
 # 指定维护者的名字
 MAINTAINER autoML
-#ADD deployk8s.jar deployk8s.jar
 COPY ./target/deployk8s.jar /app/deployk8s.jar
 #暴露端口
 EXPOSE 9900
