@@ -27,6 +27,24 @@ spec:
     spec:
       containers:
       - name: deployk8s
-        image: deployk8s:1.0
+        image: 17060212119/deployk8s:1.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9900
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deployk8s-svc
+  namespace: deployk8s
+  labels:
+    app: deployk8s-svc
+spec:
+  ports:
+  - port: 9900
+    protocol: TCP
+    targetPort: 9900
+  selector:
+    app: deployk8s-svc
+  type: NodePort
