@@ -7,7 +7,7 @@ metadata:
   #所属命名空间
   namespace: deployk8s
   labels:
-    name: deployk8s
+    app: deployk8s
 #详情
 spec:
   #副本数量
@@ -19,11 +19,11 @@ spec:
   progressDeadlineSeconds: 600
   selector:
     matchLabels:
-      name: deployk8s
+      app: deployk8s
   template:
     metadata:
       labels:
-        name: deployk8s
+        app: deployk8s
     spec:
       containers:
       - name: deployk8s
@@ -31,20 +31,19 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9900
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: deployk8s-svc
+  name: deployk8s
   namespace: deployk8s
   labels:
-    app: deployk8s-svc
+    app: deployk8s
 spec:
   ports:
   - port: 9900
     protocol: TCP
     targetPort: 9900
   selector:
-    app: deployk8s-svc
+    app: deployk8s
   type: NodePort
