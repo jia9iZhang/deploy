@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+#类型
+kind: Deployment
+#元数据
+metadata:
+  name: springboot-deploy
+  #所属命名空间
+  namespace: springboot-deploy
+  labels:
+    app: springboot-deploy
+#详情
+spec:
+  #副本数量
+  replicas: 1
+  #保留历史版本，默认是10
+  revisionHistoryLimit: 10
+  paused: false
+  #部署超时时间(s)
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app: springboot-deploy
+  template:
+    metadata:
+      labels:
+        app: springboot-deploy
+    spec:
+      containers:
+      - name: springboot-deploy
+        image: 17060212119/springboot-deploy:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9900
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-deploy
+  namespace: springboot-deploy
+  labels:
+    app: springboot-deploy
+spec:
+  ports:
+  - port: 9900
+    protocol: TCP
+    targetPort: 9900
+  selector:
+    app: springboot-deploy
+  type: NodePort
