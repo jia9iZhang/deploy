@@ -34,8 +34,68 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+<!--                <configuration>-->
+<!--                    <mainClass>com.deploy.springbootdeploy.SpringbootDeployApplication</mainClass>-->
+<!--                </configuration>-->
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>1.13.1</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>docker.io/17060212119/${project.artifactId}:${project.version}</name>
+                            <!--不加<name>标签不生效-->
+                            <build>
+                                <from>azul/zulu-openjdk:11-latest</from>
+<!--                                <env>-->
+<!--                                    <JAVA_MAIN_CLASS>com.deploy.springbootdeploy.SpringbootDeployApplication</JAVA_MAIN_CLASS>-->
+<!--                                </env>-->
+                                <assembly>
+                                    <targetDir>/deployments</targetDir>
+                                </assembly>
+                                <cmd>java -jar /deployments/${project.artifactId}-${project.version}.jar</cmd>
+                                <ports>
+                                    <!-- Ports to expose in the pod specs -->
+                                    <port>9900</port>
+                                </ports>
+                            </build>
+                        </image>
+                    </images>
+                    <authConfig>
+                        <username>zjq17060212119@163.com</username>
+                        <password>154269564</password>
+                    </authConfig>
+                    <namespace>spc-k8s-ns</namespace>
+                    <resources>
+                        <services>
+                            <service>
+                                <name>${project.artifactId}</name>
+                                <headless>false</headless>
+                                <type>NodePort</type>
+                                <ports>
+                                    <port>
+                                        <protocol>tcp</protocol>
+                                        <port>9900</port>
+                                        <targetPort>9900</targetPort>
+                                    </port>
+                                </ports>
+                            </service>
+                        </services>
+                    </resources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                            <goal>resource</goal>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
